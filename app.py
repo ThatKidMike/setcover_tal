@@ -2,31 +2,6 @@ from itertools import chain, combinations, permutations, product
 import time
 from random import random, randrange
 
-def powerset(iterable):
-    universe = list(iterable)
-    return chain.from_iterable(combinations(universe, r) for r in range(1, len(universe) + 1))
-
-def subsets(iterable):
-    universe = list(iterable)
-    subsets = filter(lambda sub: len(sub) <= 2, universe)
-    return subsets
-
-#def exact_algorithm(subsets, universe):
-  #  subsets = list(subsets)
-  #  universe = list(universe)
-   # permutated = chain([list(subsets) for subsets in permutations(subsets, n)] for n in range(1, len(universe)+1))
-   # unwrappedPermutated = list(chain.from_iterable(permutated))
-   # minLen = len(universe)
-   # minInnerElements = len(universe)
-   # print(unwrappedPermutated)
-   # finalSubset = []
-    #for elem in unwrappedPermutated:
-     #   if set(chain.from_iterable(elem)).issuperset(set(universe)):
-     #       if len(elem) <= minLen:
-      #          if len(list(chain.from_iterable(elem))) <= minInnerElements:
-      #              finalSubset = elem
-      #              minLen = len(elem)
-    #return finalSubset
 
 def exact_algorithm_reforged(sub, univer):
     subsets = list(sub)
@@ -46,6 +21,13 @@ def exact_algorithm_reforged(sub, univer):
                 break 
         currPsbIntersec+=1
     return finalSubset
+
+def exact_algorithm_remake(sub, univer):
+    for iter in range(1, len(univer)+1):
+        for comb in combinations(sub, iter):
+            if len(list(univer)) == len(list((chain.from_iterable(list(comb))))):
+                if list(univer) == list((chain.from_iterable(list(comb)))):
+                    return(comb)
 
 def greedy_algorithm(sub, univer):
     universe = list(univer)
@@ -71,7 +53,7 @@ def subsets_gen(iterable):
     iterator = 0
     tempSet = set()
     while iterator != len(iterable):
-        for i in range (0,4):
+        for i in range (0,2):
             if iterator >= len(iterable):
                 break
             tempSet.add(iterable[iterator])
@@ -80,8 +62,22 @@ def subsets_gen(iterable):
         tempSet = set()
     tempSubset = set()   
     madeSubset = set()
-    for i in range(0, 5000000):
-        endrange = randrange(0,7)
+    tempSet = set()
+    for i in range(1, 2):
+        tempSet.add(i)
+    wholeSubsets.append(tempSet)
+    tempSet = set()
+    for i in range(2, 4):
+        tempSet.add(i)
+    wholeSubsets.append(tempSet)
+    for i in range(4, 8):
+        tempSet.add(i)
+    wholeSubsets.append(tempSet)
+    for i in range(8, 10):
+        tempSet.add(i)
+    wholeSubsets.append(tempSet)
+    for i in range(0, 100):
+        endrange = randrange(0,3)
         for j in range(1, endrange):
             while len(madeSubset) < endrange:
                 index = randrange(0,len(iterable))
@@ -93,27 +89,23 @@ def subsets_gen(iterable):
 
 
 initialSet = []
-for i in range(1,150):
+for i in range(1,10):
     initialSet.append(i)
 subs = subsets_gen(initialSet)
 subs2 = subs.copy()
 print("MEASURE TIME!")
 print('######################################')
-#print(list(subs))
-#pows = powerset(initialSet)
-#subs = subsets(pows)
 
 exactSummator = 0
 greedySummator = 0
 
 for i in range (0, 20):
     start1 = time.time()
-    results_exact = exact_algorithm_reforged(subs, initialSet)
+    results_exact = exact_algorithm_remake(subs, initialSet)
     print(results_exact)
     print(len(list(chain.from_iterable(list(results_exact)))))
     end1 = time.time()
     exactSummator += float(end1 - start1)
-
 
 print('#######################################')
 
@@ -125,9 +117,9 @@ for i in range (0, 20):
     end1 = time.time()
     greedySummator += float(end1 - start1)
 
-
 print(float(exactSummator)/20)
 print(float(greedySummator)/20)
+
 
 
 
