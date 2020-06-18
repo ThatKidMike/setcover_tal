@@ -48,7 +48,7 @@ def greedy_algorithm(sub, univer):
                 break
     return finalSubset
 
-def subsets_gen(iterable):
+def subsets_gen(iterable, subsetsAmt):
     wholeSubsets = []
     iterator = 0
     tempSet = set()
@@ -70,13 +70,16 @@ def subsets_gen(iterable):
     for i in range(2, 4):
         tempSet.add(i)
     wholeSubsets.append(tempSet)
+    tempSet = set()
     for i in range(4, 8):
         tempSet.add(i)
     wholeSubsets.append(tempSet)
+    tempSet = set()
     for i in range(8, 10):
         tempSet.add(i)
     wholeSubsets.append(tempSet)
-    for i in range(0, 100):
+    tempSet = set()
+    for i in range(0, int(subsetsAmt)):
         endrange = randrange(0,3)
         for j in range(1, endrange):
             while len(madeSubset) < endrange:
@@ -88,10 +91,16 @@ def subsets_gen(iterable):
     return wholeSubsets
 
 
+rangeStart = input("Universe start: ")
+rangeEnd = input("Universe stop: ")
+compareLoop = input("How many times loop through the algorithms: ")
+subsetsAmt = input("How many subsets to generate: ")
+
+
 initialSet = []
-for i in range(1,10):
+for i in range(int(rangeStart), int(rangeEnd)):
     initialSet.append(i)
-subs = subsets_gen(initialSet)
+subs = subsets_gen(initialSet, int(subsetsAmt))
 subs2 = subs.copy()
 print("MEASURE TIME!")
 print('######################################')
@@ -99,7 +108,7 @@ print('######################################')
 exactSummator = 0
 greedySummator = 0
 
-for i in range (0, 20):
+for i in range (0, int(compareLoop)):
     start1 = time.time()
     results_exact = exact_algorithm_remake(subs, initialSet)
     print(results_exact)
@@ -109,7 +118,7 @@ for i in range (0, 20):
 
 print('#######################################')
 
-for i in range (0, 20):
+for i in range (0, int(compareLoop)):
     start1 = time.time()
     results_greedy = greedy_algorithm(subs, initialSet)
     print(results_greedy)
@@ -117,8 +126,8 @@ for i in range (0, 20):
     end1 = time.time()
     greedySummator += float(end1 - start1)
 
-print(float(exactSummator)/20)
-print(float(greedySummator)/20)
+print(float(exactSummator)/1)
+print(float(greedySummator)/1)
 
 
 
