@@ -1,32 +1,13 @@
 from itertools import chain, combinations, permutations, product
 import time
-from random import random, randrange
+from random import random, randrange, shuffle
 
-
-def exact_algorithm_reforged(sub, univer):
-    subsets = list(sub)
-    subsets = sorted(subsets, key=len, reverse=True)
-    smallUniverse = list(univer)
-    finalSubset = []
-    currPsbIntersec = 0
-    currElem = subsets[0]
-    finalSubset.append(currElem)
-    smallUniverse = set(smallUniverse) - set(currElem)
-    while len(list(smallUniverse)) != 0:
-        for elem in subsets:
-            if len(set(elem).intersection(chain.from_iterable(list(finalSubset)))) == currPsbIntersec:
-                smallUniverse = set(smallUniverse) - set(elem)
-                finalSubset.append(elem)
-            if len(list(smallUniverse)) == 0:
-                break 
-        currPsbIntersec+=1
-    return finalSubset
 
 def exact_algorithm_remake(sub, univer):
     for iter in range(1, len(univer)+1):
         for comb in combinations(sub, iter):
             if len(list(univer)) == len(list((chain.from_iterable(list(comb))))):
-                if list(univer) == list((chain.from_iterable(list(comb)))):
+                if set(univer) == set((chain.from_iterable(list(comb)))):
                     return(comb)
 
 def greedy_algorithm(sub, univer):
@@ -48,46 +29,34 @@ def greedy_algorithm(sub, univer):
                 break
     return finalSubset
 
-def subsets_gen(iterable, subsetsAmt):
+def subsets_gen(iterable, subsetsAmt, maxSubsetRange):
     wholeSubsets = []
     iterator = 0
+    setIterator = 0
     tempSet = set()
-    while iterator != len(iterable):
-        for i in range (0,2):
-            if iterator >= len(iterable):
-                break
-            tempSet.add(iterable[iterator])
-            iterator += 1
-        wholeSubsets.append(tempSet)
-        tempSet = set()
-    tempSubset = set()   
     madeSubset = set()
-    tempSet = set()
-    for i in range(1, 2):
-        tempSet.add(i)
-    wholeSubsets.append(tempSet)
-    tempSet = set()
-    for i in range(2, 4):
-        tempSet.add(i)
-    wholeSubsets.append(tempSet)
-    tempSet = set()
-    for i in range(4, 8):
-        tempSet.add(i)
-    wholeSubsets.append(tempSet)
-    tempSet = set()
-    for i in range(8, 10):
-        tempSet.add(i)
-    wholeSubsets.append(tempSet)
-    tempSet = set()
-    for i in range(0, int(subsetsAmt)):
-        endrange = randrange(0,3)
+    iterableCopy = iterable.copy()
+    shuffle(iterableCopy)
+    while len(iterableCopy) != 0:
+        randSubsetRange = randrange(1, maxSubsetRange+1)
+        while randSubsetRange > len(iterableCopy):
+            randSubsetRange = randrange(1, maxSubsetRange+1)
+        for i in range(0, randSubsetRange):
+            tempSet.add(iterableCopy.pop(0))
+        wholeSubsets.append(tempSet)
+        setIterator += 1
+        tempSet = set()
+    while setIterator != subsetsAmt:
+        endrange = randrange(1, maxSubsetRange+1)
         for j in range(1, endrange):
             while len(madeSubset) < endrange:
-                index = randrange(0,len(iterable))
+                index = randrange(0, len(iterable)-1)
                 madeSubset.add(iterable[index])
         if len(madeSubset) > 0:
             wholeSubsets.append(madeSubset)
+            setIterator += 1
         madeSubset = set()
+    shuffle(wholeSubsets)
     return wholeSubsets
 
 
@@ -95,12 +64,13 @@ rangeStart = input("Universe start: ")
 rangeEnd = input("Universe stop: ")
 compareLoop = input("How many times loop through the algorithms: ")
 subsetsAmt = input("How many subsets to generate: ")
+maxRange = input("Max range of subsets: ")
 
 
 initialSet = []
-for i in range(int(rangeStart), int(rangeEnd)):
+for i in range(int(rangeStart), int(rangeEnd)+1):
     initialSet.append(i)
-subs = subsets_gen(initialSet, int(subsetsAmt))
+subs = subsets_gen(initialSet, int(subsetsAmt), int(maxRange))
 subs2 = subs.copy()
 print("MEASURE TIME!")
 print('######################################')
@@ -126,9 +96,5 @@ for i in range (0, int(compareLoop)):
     end1 = time.time()
     greedySummator += float(end1 - start1)
 
-print(float(exactSummator)/1)
-print(float(greedySummator)/1)
-
-
-
-
+print(float(exactSummator)/int(compareLoop))
+print(float(greedySummator)/int(compareLoop))
