@@ -4,7 +4,7 @@ from random import random, randrange, shuffle
 
 
 def exact_algorithm_remake(sub, univer):
-    for iter in range(1, len(univer)+1):
+    for iter in range(0, len(sub)):
         for comb in combinations(sub, iter):
             if len(list(univer)) == len(list((chain.from_iterable(list(comb))))):
                 if set(univer) == set((chain.from_iterable(list(comb)))):
